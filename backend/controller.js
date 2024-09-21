@@ -1,26 +1,57 @@
-const users =[
-    {
-        id:1,
-        name:'yenuli',
-    },
-    {
-        id:2,
-        name:'yenuliC',
-    },
-];
+// const { response } = require('./app');
+const User = require('./model')
 
-//create a controller function
-//call back function
-//here get all users 
-const getUsers = (cb) =>{
-    cb(users);
+//crud
+const getUsers = (req, res, next) =>{
+    User.find()
+        .then(response =>{
+            res.json({response})
+        })
+        .catch(error =>{
+            res.json({error})
+        })
 };
 
-//get one user from the users
-const getUserById = (id, cb) =>{
-    const user = users.find(user => user.id == id); //here we do not check the data type. Only check the value
-    cb(user);
+const addUser = (req, res, next) =>{
+    const user = new User({
+        id: req.body.id,
+        name: req.body.name,
+    });
+    user.save()
+        .then(response =>{
+            res.json({response})
+        })
+        .catch(error =>{
+            res.json({error})
+        });
 };
+
+const updateUser = (req, res, next)=>{
+    const{id, name} = req.body;
+    User.updateOne({id:id}, {$set:{name:name} })
+        .then(response =>{
+            res.json({response})
+        })
+        .catch(error =>{
+            res.json({error})
+        });
+}
+
+const deleteUser = (req, res, next)=>{
+    const id =req.body.id;
+    User.deleteOne({id:id})
+        .then(response =>{
+            res.json({response})
+        }) 
+        .catch(error =>{
+            res.json({error})
+        });
+}
+
 
 exports.getUsers = getUsers;
-exports.getUserById = getUserById;
+exports.addUser = addUser;
+exports.updateUser = updateUser;
+exports.deleteUser = deleteUser;
+
+
